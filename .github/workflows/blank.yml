@@ -30,9 +30,15 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: pages
           FOLDER: build
-      - name: build project
+      - name: hexo-cli
         run: npm i -g hexo-cli
-             npm i -g hexo-deployer-git
-             npm install
-             hexo clean
-             hexo deploy
+      - name: hexo-cli
+        run: npm i -g hexo-deployer-git
+      - name: install
+        run: npm install
+      - name: clean
+        run: hexo clean
+      - name: deploy
+        run: hexo deploy
+
+             
