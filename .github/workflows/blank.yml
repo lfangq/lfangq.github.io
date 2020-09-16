@@ -36,6 +36,7 @@ jobs:
         git config --global user.email '2953045898@qq.com'
         # install dependencies
         npm i -g hexo-cli # 安装hexo
+        npm i -g hexo-deployer-git # 安装hexo-deployer-git
         npm i
         # 拉取主题代码
         # rm -rf themes/*
