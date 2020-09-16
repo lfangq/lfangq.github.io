@@ -1,50 +1,66 @@
-name: Deploy Blog
+name: Blog CI/CD
 
+# 触发条件：在 push 到 hexo-blog-backup 分支后触发
 on:
   push:
-    branches:
-      - master # 当有新push时运行
+    branches: 
+      - hexo-blog-backup
 
 env:
   TZ: Asia/Shanghai
 
 jobs:
-  build: # 一项叫做build的任务
+  blog-cicd:
+    name: Hexo blog build & deploy
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 系统作为编译部署的环境
 
-    runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
-    
     steps:
-    - name: Checkout # 将仓库内master分支的内容下载到工作目录
-      uses: actions/checkout@master # 脚本来自 https://github.com/actions/checkout
-      
-    - name: Use Node.js 10.x # 配置Node环境
-      uses: actions/setup-node@master # 配置脚本来自 https://github.com/actions/setup-node
+    - name: Checkout codes
+      uses: actions/checkout@v2
+
+    - name: Setup node
+      # 设置 node.js 环境
+      uses: actions/setup-node@v1
       with:
-        node-version: "10.x"
-    
-    - name: Setup Hexo env
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 这里是上面WinterChenS.github.io新增的公钥：HEXO_DEPLOY_KEY
+        node-version: '12.x'
+
+    - name: Cache node modules
+      # 设置包缓存目录，避免每次下载
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install hexo dependencies
+      # 下载 hexo-cli 脚手架及相关安装包
       run: |
-        # set up private key for deploy
-        mkdir -p ~/.ssh/
-        echo "$ACCESS_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        # set git infomation
-        git config --global user.name 'lfangq' # 换成你自己的邮箱和名字
-        git config --global user.email '2953045898@qq.com'
-        # install dependencies
-        npm i -g hexo-cli # 安装hexo
-        npm i -g hexo-deployer-git # 安装hexo-deployer-git
-        npm i
-        # 拉取主题代码
-        # rm -rf themes/*
-        # git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
-        
-  
-    - name: Deploy
+        npm install hexo-cli gulp -g
+        npm install
+
+    - name: Generate files
+      # 编译 markdown 文件
       run: |
-        # publish
-        hexo deploy # 执行部署程序
-        
+        hexo clean
+        hexo generate
+
+    - name: Execute gulp task
+      run: gulp
+
+    - name: Deploy hexo blog
+      env: 
+        # Github 仓库
+        GITHUB_REPO: github.com/lfangq/lfangq.github.io
+        # Coding 仓库
+        # CODING_REPO: e.coding.net/yifanzheng/blogs.git
+        # Gitee 仓库
+        # GITEE_REPO: gitee.com/yifanzheng/yifanzheng.gitee.io
+      # 将编译后的博客文件推送到指定仓库
+      run: |
+        cd ./public && git init && git add .
+        git config user.name "lfangq"
+        git config user.email "2953045898@qq.com"
+        git add .
+        git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+        git push --force --quiet "https://${{ secrets.ACCESS_TOKEN }}@$GITHUB_REPO" pages:pages
+        # git push --force --quiet "https://RoYFbFDSfM:${{ secrets.CODING_TOKEN }}@$CODING_REPO" master:master
+        # git push --force --quiet "https://yifanzheng:${{ secrets.GITEE_ACCESS_TOKEN }}@$GITEE_REPO" master:master
