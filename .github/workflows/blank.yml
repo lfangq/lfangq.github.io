@@ -38,8 +38,8 @@ jobs:
         npm i -g hexo-cli # 安装hexo
         npm i
         # 拉取主题代码
-        #rm -rf themes/*
-        #git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
+        # rm -rf themes/*
+        # git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
         
   
     - name: Deploy
