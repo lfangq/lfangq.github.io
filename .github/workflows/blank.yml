@@ -24,7 +24,7 @@ jobs:
     
     - name: Setup Hexo env
       env:
-        ACTION_DEPLOY_KEY: ${{ secrets.ACCESS_TOKEN }} # 这里是上面WinterChenS.github.io新增的公钥：HEXO_DEPLOY_KEY
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 这里是上面WinterChenS.github.io新增的公钥：HEXO_DEPLOY_KEY
       run: |
         # set up private key for deploy
         mkdir -p ~/.ssh/
@@ -46,5 +46,5 @@ jobs:
     - name: Deploy
       run: |
         # publish
-        hexo generate && hexo deploy # 执行部署程序
+        hexo deploy # 执行部署程序
         
