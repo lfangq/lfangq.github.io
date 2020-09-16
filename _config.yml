@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: lfangq
 subtitle: ''
 description: ''
 keywords:
@@ -106,4 +106,4 @@ deploy:
   type: git
   repo: https://github.com/lfangq/lfangq.github.io
   # example, https://github.com/hexojs/hexojs.github.io
-  branch: master
+  branch: pages
