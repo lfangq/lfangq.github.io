@@ -1,44 +1,49 @@
-# This is a basic workflow to help you get started with Actions
+name: Deploy Blog
 
-name: CI
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches:
-      - master
+      - master # 当有新push时运行
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  TZ: Asia/Shanghai
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  build: # 一项叫做build的任务
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
+    
     steps:
-      # 拉取分支
-      - uses: actions/checkout@v2
-
-      # 安装 Node 环境
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "10.x" 
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: pages
-          FOLDER: build
-      - name: hexo-cli
-        run: npm i -g hexo-cli
-      - name: hexo-cli
-        run: npm i -g hexo-deployer-git
-      - name: install
-        run: npm install
-      - name: clean
-        run: hexo clean
-      - name: deploy
-        run: hexo deploy
-
-             
+    - name: Checkout # 将仓库内master分支的内容下载到工作目录
+      uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
+      
+    - name: Use Node.js 10.x # 配置Node环境
+      uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
+      with:
+        node-version: "10.x"
+    
+    - name: Setup Hexo env
+      env:
+        ACTION_DEPLOY_KEY: ${{ secrets.ACCESS_TOKEN }} # 这里是上面WinterChenS.github.io新增的公钥：HEXO_DEPLOY_KEY
+      run: |
+        # set up private key for deploy
+        mkdir -p ~/.ssh/
+        echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        # set git infomation
+        git config --global user.name 'lfangq' # 换成你自己的邮箱和名字
+        git config --global user.email '2953045898@qq.com'
+        # install dependencies
+        npm i -g hexo-cli # 安装hexo
+        npm i
+        # 拉取主题代码
+        rm -rf themes/*
+        git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
+        
+  
+    - name: Deploy
+      run: |
+        # publish
+        hexo generate && hexo deploy # 执行部署程序
+        
