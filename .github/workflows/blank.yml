@@ -15,10 +15,10 @@ jobs:
     
     steps:
     - name: Checkout # 将仓库内master分支的内容下载到工作目录
-      uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
+      uses: actions/checkout@master # 脚本来自 https://github.com/actions/checkout
       
     - name: Use Node.js 10.x # 配置Node环境
-      uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
+      uses: actions/setup-node@master # 配置脚本来自 https://github.com/actions/setup-node
       with:
         node-version: "10.x"
     
@@ -28,7 +28,7 @@ jobs:
       run: |
         # set up private key for deploy
         mkdir -p ~/.ssh/
-        echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
+        echo "$ACCESS_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com >> ~/.ssh/known_hosts
         # set git infomation
