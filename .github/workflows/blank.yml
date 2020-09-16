@@ -1,45 +1,28 @@
-name: Deploy Blog
-
+name: Build and Deploy
 on:
   push:
     branches:
       - master # 当有新push时运行
-
-env:
-  TZ: Asia/Shanghai
-
 jobs:
-  build: # 一项叫做build的任务
-
-    runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
-    
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout # 将仓库内master分支的内容下载到工作目录
-      uses: actions/checkout@master # 脚本来自 https://github.com/actions/checkout
-      
-    - name: Use Node.js 10.x # 配置Node环境
-      uses: actions/setup-node@master # 配置脚本来自 https://github.com/actions/setup-node
-      with:
-        node-version: "10.x"
-    
-    - name: Setup Hexo env
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 这里是上面WinterChenS.github.io新增的公钥：HEXO_DEPLOY_KEY
-      run: |
-        # set up private key for deploy
-        mkdir -p ~/.ssh/
-        echo "$ACCESS_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        # set git infomation
-        git config --global user.name 'lfangq' # 换成你自己的邮箱和名字
-        git config --global user.email '2953045898@qq.com'
-        # install dependencies
-        npm i -g hexo-cli # 安装hexo
-        npm i -g hexo-deployer-git # 安装hexo-deployer-git
-        npm i
-        # 拉取主题代码
-        # rm -rf themes/*
-        # git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
-        hexo deploy # 执行部署程序
-        
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        with:
+          persist-credentials: false
+
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+           npm i -g hexo-cli
+           npm i -g hexo-deployer-git
+           npm i
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.6.1
+        with:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: pages # The branch the action should deploy to.
+          FOLDER: build # The folder the action should deploy.
+          BUILD_SCRIPT: |
+            hexo deploy
