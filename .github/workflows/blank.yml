@@ -18,7 +18,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Configuration environment
         env:
-          HEXO_DEPLOY_PRI: ${{secrets.HEXO_DEPLOY_PRI}}
+          HEXO_DEPLOY_PRI: ${{ secrets.HEXO_DEPLOY_PRI }}
         run: |
           mkdir -p ~/.ssh/
           echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
@@ -31,8 +31,6 @@ jobs:
           npm i -g hexo-cli
           npm i -g hexo-deployer-git
           npm i
-          cat  ~/.ssh/id_rsa
-          cat  ~/.ssh/known_hosts
       - name: Deploy to github page
         run: |
           hexo clean
