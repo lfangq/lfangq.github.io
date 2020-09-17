@@ -30,7 +30,7 @@ jobs:
         run: |
           npm i -g hexo
           npm i -g hexo-deployer-git
-          rm -rf node_modules && npm install --force
+          npm install
       - name: 发布页面
         run: |
           hexo clean
