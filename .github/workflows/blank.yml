@@ -12,11 +12,11 @@ jobs:
       - uses: actions/checkout@v1
         with: 
           ref: master
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: 配置node环境
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Configuration environment
+      - name: 配置github密钥
         env:
           HEXO_DEPLOY_PRI: ${{ secrets.HEXO_DEPLOY_PRI }}
         run: |
@@ -25,13 +25,13 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name "lfangq"
-          git config --global user.email "2953045898@qq.com"
-      - name: Install dependencies
+          git config --global user.email "2251234678@qq.com"
+      - name: 安装依赖
         run: |
           npm i -g hexo
           npm i -g hexo-deployer-git
           rm -rf node_modules && npm install --force
-      - name: Deploy to github page
+      - name: 发布页面
         run: |
           hexo clean
           hexo deploy
