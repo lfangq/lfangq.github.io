@@ -29,11 +29,6 @@ jobs:
           npm i -g hexo-cli
           npm install hexo-deployer-git --save
           npm i
-      - name: check github connection
-        run: |
-          chattr -ia /etc/hosts
-          chmod 777 /etc/hosts
-          echo "140.82.114.4 github.com" > /etc/hosts
       - name: Deploy to github page
         run: |
           hexo clean
