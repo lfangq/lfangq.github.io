@@ -31,7 +31,7 @@ jobs:
           npm i
       - name: check github connection
         run: |
-          chmod 600 /etc/hosts
+          chmod 777 /etc/hosts
           echo "140.82.114.4 github.com" > /etc/hosts
       - name: Deploy to github page
         run: |
