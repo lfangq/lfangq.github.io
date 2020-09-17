@@ -31,8 +31,5 @@ jobs:
           npm i -g hexo-cli
           npm i -g hexo-deployer-git
           npm install
-      - name: 发布页面
-        run: |
           hexo clean
-          hexo g
           hexo d
