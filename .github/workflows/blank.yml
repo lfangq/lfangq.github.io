@@ -33,4 +33,6 @@ jobs:
           npm install
       - name: 发布页面
         run: |
-          hexo deploy
+          hexo clean
+          hexo g
+          hexo d
