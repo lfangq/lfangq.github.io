@@ -1,5 +1,7 @@
 name: HEXO CI
-on: [push]
+on: 
+  branches:
+    - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +29,9 @@ jobs:
           npm i -g hexo-cli
           npm install hexo-deployer-git --save
           npm i
-      - name: Generate static blog file
-        run: |
-          hexo generate
+      - name: check github connection
+        run: ssh -T git@github.com
       - name: Deploy to github page
         run: |
+          hexo clean
           hexo deploy
