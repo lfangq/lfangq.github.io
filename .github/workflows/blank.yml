@@ -34,4 +34,5 @@ jobs:
       - name: 发布页面
         run: |
           hexo clean
+          hexo g
           hexo deploy
