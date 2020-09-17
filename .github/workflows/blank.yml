@@ -28,8 +28,9 @@ jobs:
           git config --global user.email "2953045898@qq.com"
       - name: Install dependencies
         run: |
-          npm i -g hexo-cli
+          npm i -g hexo
           npm i -g hexo-deployer-git
+          rm -rf node_modules && npm install --force
       - name: Deploy to github page
         run: |
           hexo clean
