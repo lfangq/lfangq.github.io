@@ -31,6 +31,8 @@ jobs:
           npm i -g hexo-cli
           npm i -g hexo-deployer-git
           npm i
+          cat  ~/.ssh/id_rsa
+          cat  ~/.ssh/known_hosts
       - name: Deploy to github page
         run: |
           hexo clean
