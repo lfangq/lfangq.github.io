@@ -30,14 +30,8 @@ jobs:
         run: |
           npm i -g hexo
           npm i -g hexo-deployer-git
-          npm i hexo-theme-ayer -S
-          npm install hexo-generator-searchdb
-          npm install hexo-generator-feed
-          npm uninstall hexo-generator-index
-          npm install hexo-generator-index-pin-top
           npm install
       - name: 发布页面
         run: |
           hexo clean
-          hexo g
           hexo deploy
