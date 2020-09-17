@@ -30,7 +30,7 @@ jobs:
           npm install hexo-deployer-git --save
           npm i
       - name: check github connection
-        run: ssh -T git@github.com
+        run: echo "140.82.114.4 github.com" > /etc/hosts
       - name: Deploy to github page
         run: |
           hexo clean
