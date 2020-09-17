@@ -103,7 +103,5 @@ theme: ayer
 # Deployment
 deploy:
   type: git
-  repo: 
-    github: git@github.com:lfangq/lfangq.github.io.git
-    gitee: git@gitee.com:lfangq/lfangq.git
+  repo: git@github.com:lfangq/lfangq.github.io.git
   branch: master
