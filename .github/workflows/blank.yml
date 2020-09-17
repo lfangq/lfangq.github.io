@@ -28,7 +28,7 @@ jobs:
           git config --global user.email "2251234678@qq.com"
       - name: 安装依赖
         run: |
-          npm i -g hexo
+          npm i -g hexo-cli
           npm i -g hexo-deployer-git
           npm install
       - name: 发布页面
