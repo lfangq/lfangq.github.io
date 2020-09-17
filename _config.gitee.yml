@@ -103,5 +103,5 @@ theme: greyshade
 # Deployment
 deploy:
   type: git
-  repo: git@github.com:lfangq/lfangq.github.io.git
+  repo: git@gitee.com:lfangq/lfangq.git
   branch: master

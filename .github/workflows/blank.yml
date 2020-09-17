@@ -34,5 +34,6 @@ jobs:
       - name: 发布页面
         run: |
           hexo clean
-          hexo g
-          hexo deploy
+          hexo g -d --config _config.yml
+          hexo clean
+          hexo g -d --config _config.gitee.yml
