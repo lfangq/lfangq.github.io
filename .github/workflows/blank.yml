@@ -9,9 +9,9 @@ jobs:
       matrix:
         node-version: [10.x]
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@pages
         with: 
-          ref: master
+          ref: pages
       - name: 配置node环境
         uses: actions/setup-node@v1
         with:
@@ -34,6 +34,5 @@ jobs:
       - name: 发布页面
         run: |
           hexo clean
-          hexo g -d --config _config.yml
-          hexo clean
-          hexo g -d --config _config.gitee.yml
+          hexo g
+          hexo deploy
