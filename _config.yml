@@ -104,5 +104,7 @@ theme: landscape
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: git@github.com:lfangq/lfangq.github.io.git
-  branch: pages
+  repo: 
+    github: git@github.com:lfangq/lfangq.github.io.git
+    gitee: git@gitee.com:lfangq/lfangq.git
+  branch: master
