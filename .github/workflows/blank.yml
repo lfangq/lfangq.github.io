@@ -10,6 +10,8 @@ jobs:
         node-version: [10.x]
     steps:
       - uses: actions/checkout@v1
+        with: 
+          ref: pages
       - name: 配置node环境
         uses: actions/setup-node@v1
         with:
