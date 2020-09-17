@@ -9,7 +9,7 @@ jobs:
       matrix:
         node-version: [10.x]
     steps:
-      - uses: actions/checkout@pages
+      - uses: actions/checkout@v1
       - name: 配置node环境
         uses: actions/setup-node@v1
         with:
