@@ -30,7 +30,7 @@ jobs:
         run: |
           npm i -g hexo
           npm i -g hexo-deployer-git
-          npm install --save hexo-generator-search@2.1.1 hexo-generator-topindex@0.3.0 hexo-helper-qrcode@1.0.2 hexo-renderer-less@0.2.0
+          npm i hexo-theme-ayer -S
           npm install
       - name: 发布页面
         run: |
