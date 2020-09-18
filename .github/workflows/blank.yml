@@ -29,6 +29,8 @@ jobs:
           npm i -g hexo-cli
           npm i -g hexo-deployer-git
           npm install
+          rm -rf themes/*
+          git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
       - name: 发布页面
         run: |
           hexo clean
