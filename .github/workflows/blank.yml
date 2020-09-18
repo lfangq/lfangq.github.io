@@ -30,7 +30,7 @@ jobs:
           npm i -g hexo-deployer-git
           npm install
           rm -rf themes/*
-          git clone https://github.com/WinterChenS/hexo-theme-diaspora.git themes/diaspora
+          git clone https://github.com/gary-Shen/hexo-theme-bear themes/bear
       - name: 发布页面
         run: |
           hexo clean
