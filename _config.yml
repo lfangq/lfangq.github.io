@@ -109,7 +109,7 @@ deploy:
 # Markdown-it config
 #markdown: 'zero'
 #markdown: 'default'
-markdown: 'commonmark'
+# markdown: 'commonmark'
 # Markdown-it config
 markdown:
   render:
