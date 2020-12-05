@@ -725,7 +725,7 @@ algolia_search:
 # Local Search
 # Dependencies: https://github.com/theme-next/hexo-generator-searchdb
 local_search:
-  enable: false
+  enable: true
   # If auto, trigger search by changing input.
   # If manual, trigger search by pressing enter key or search button.
   trigger: auto
@@ -781,7 +781,7 @@ note:
 # Tabs tag
 tabs:
   transition:
-    tabs: false
+    tabs: true
     labels: true
 
 # PDF tag
@@ -827,7 +827,7 @@ motion:
 # Dependencies: https://github.com/theme-next/theme-next-pace
 # For more information: https://github.com/HubSpot/pace
 pace:
-  enable: false
+  enable: true
   # Themes list:
   # big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple
   # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
@@ -977,3 +977,7 @@ vendors:
 css: css
 js: js
 images: images
+
+auto_excerpt:
+  enable: true
+  length: 150

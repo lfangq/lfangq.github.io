@@ -45,7 +45,7 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: true
   tab_replace: ''
@@ -56,6 +56,12 @@ prismjs:
   preprocess: true
   line_number: true
   tab_replace: ''
+
+prism_plugin:
+  mode: 'preprocess'    # realtime/preprocess
+  theme: 'tomorrow'
+  line_number: false    # default false
+  custom_css:
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
@@ -106,28 +112,13 @@ deploy:
   repo: git@github.com:lfangq/lfangq.github.io.git
   branch: master
 
-# Markdown-it config
-#markdown: 'zero'
-#markdown: 'default'
-# markdown: 'commonmark'
-# Markdown-it config
-markdown:
-  render:
-    html: true
-    xhtmlOut: false
-    breaks: true
-    linkify: true
-    typographer: true
-    quotes: '“”‘’'
-  plugins:
-    - markdown-it-abbr
-    - markdown-it-footnote
-    - markdown-it-ins
-    - markdown-it-sub
-    - markdown-it-sup
-  anchors:
-    level: 2
-    collisionSuffix: 'v'
-    permalink: true
-    permalinkClass: header-anchor
-    permalinkSymbol: ¶
+# Search Config
+search:
+  path: search.json #之前就是这里出了问题导致图标错误，错误的教程是 search.xml
+  field: post
+  format: html
+  limit: 1000
+
+permalink_pinyin:
+  enable: true
+  separator: '-' # default: '-'
