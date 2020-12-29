@@ -414,19 +414,19 @@ font:
   global:
     external: true
     family: Monda
-    size: 26
+    size: 26px
 
   # Font settings for site title (.site-title).
   title:
     external: true
     family: Roboto Slab
-    size: 32
+    size: 32px
 
   # Font settings for headlines (<h1> to <h6>).
   headings:
     external: true
     family: Lobster Two
-    size: 24
+    size: 24px
 
   # Font settings for posts (.post-body).
   posts:
@@ -837,7 +837,7 @@ pace:
 # Dependencies: https://github.com/theme-next/theme-next-three
 three:
   enable: false
-  three_waves: false
+  three_waves: true
   canvas_lines: true
   canvas_sphere: true
 
