@@ -114,3 +114,4 @@ constructor 是原型 prototype 的一个属性，当函数被定义时候，js 
 由上图可以看出[]的原型指向 Array.prototype，间接指向 Object.prototype, 因此 [] instanceof Array 返回 true， [] instanceof Object 也返回 true。
 
 instanceof 只能用来判断两个对象是否属于实例关系， 而不能判断一个对象实例具体属于哪种类型
+
