@@ -1930,7 +1930,7 @@ if (collection.length > 0) {
 
 #### 15.4 更多信息请见Angus Croll的真理、平等和JavaScript —— Truth Equality and JavaScript
 
-#### 在`case`和`default`分句里用大括号创建一块包含语法声明的区域(e.g. `let`, `const`, `function`, and `class`). eslint: `no-case-declarations`.
+#### 15.5 在`case`和`default`分句里用大括号创建一块包含语法声明的区域(e.g. `let`, `const`, `function`, and `class`). eslint: `no-case-declarations`.
 
 > Why? 语法声明在整个switch的代码块里都可见，但是只有当其被分配后才会初始化，他的初始化时当这个case被执行时才产生。 当多个case分句试图定义同一个事情时就出问题了
 
@@ -1996,5 +1996,19 @@ const foo = maybe1 > maybe2
 const maybeNull = value1 > value2 ? 'baz' : null;
 
 const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+```
+
+#### 15.7 避免不需要的三元表达式。 eslint: `no-unneeded-ternary`.
+
+```javascript
+// bad
+const foo = a ? a : b;
+const bar = c ? true : false;
+const baz = c ? false : true;
+
+// good
+const foo = a || b;
+const bar = !!c;
+const baz = !c;
 ```
 
