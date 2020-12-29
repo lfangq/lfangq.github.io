@@ -5,8 +5,7 @@ tags: [javascript]
 ---
 
 ### Types
-
-## <!-- more -->
+<!-- more -->
 
 #### 1.1 基本类型: 你可以直接获取到基本类型的值
 
@@ -618,3 +617,68 @@ const foo = '\'this\' is "quoted"';
 //best
 const foo = `my name is '${name}'`;
 ```
+
+### Functions
+
+#### 7.1 用命名函数表达式而不是函数声明。eslint: `func-style`
+> 函数表达式： const func = function () {}
+
+> 函数声明： function func() {}
+
+> Why? 函数声明时作用域被提前了，这意味着在一个文件里函数很容易（太容易了）在其定义之前被引用。这样伤害了代码可读性和可维护性。如果你发现一个函数又大又复杂，这个函数妨碍这个文件其他部分的理解性，这可能就是时候把这个函数单独抽成一个模块了。别忘了给表达式显示的命名，不用管这个名字是不是由一个确定的变量推断出来的，这消除了由匿名函数在错误调用栈产生的所有假设，这在现代浏览器和类似babel编译器中很常见 (Discussion)
+
+```javascript
+// bad
+function foo() {
+  // ...
+}
+
+// bad
+const foo = function () {
+  // ...
+};
+
+// good
+// lexical name distinguished from the variable-referenced invocation(s)
+// 函数表达式名和声明的函数名是不一样的
+const short = function longUniqueMoreDescriptiveLexicalFoo() {
+  // ...
+};
+```
+
+#### 7.2 把立即执行函数包裹在圆括号里。 eslint: `wrap-iife`
+
+> Why? immediately invoked function expression = IIFE Why? 一个立即调用的函数表达式是一个单元 - 把它和他的调用者（圆括号）包裹起来，在括号中可以清晰的地表达这些。 Why? 注意：在模块化世界里，你几乎用不着 IIFE
+
+```javascript
+// immediately-invoked function expression (IIFE)
+(function () {
+  console.log('Welcome to the Internet. Please follow me.');
+}());
+```
+
+#### 7.2.1 IIFE
+
+IIFE: Immediately Invoked Function Expression，意为立即调用的函数表达式，也就是说，声明函数的同时立即调用这个函数。
+
+* 不采用IIFE时的函数声明和函数调用：
+
+``` javascript
+function foo(){
+  var a = 10;
+  console.log(a);
+}
+foo();
+```
+
+* IIFE形式的函数调用：
+
+``` javascript
+(function foo(){
+  var a = 10;
+  console.log(a);
+})();
+```
+
+函数的声明和IIFE的区别在于，在函数的声明中，我们首先看到的是function关键字，而IIFE我们首先看到的是左边的（。也就是说，使用一对（）将函数的声明括起来，使得JS编译器不再认为这是一个函数声明，而是一个IIFE，即需要立刻执行声明的函数。
+两者达到的目的是相同的，都是声明了一个函数foo并且随后调用函数foo。
