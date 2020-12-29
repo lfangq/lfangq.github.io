@@ -16,7 +16,7 @@ tags: [javascript]
 - `undefined`
 - `symbol`
 
-```js
+```javascript
 const foo = 1
 let bar = foo
 
@@ -31,7 +31,7 @@ console.log(foo, bar) // => 1,9
 - `array`
 - `function`
 
-```js
+```javascript
 const foo = [1, 2]
 const bar = foo
 
@@ -44,7 +44,7 @@ console.log(foo[0], bar[0]) // => 9, 9
 
 - typeof
 
-```js
+```javascript
 typeof '' // => string
 typeof 1 // => number
 typeof true // => boolean
@@ -64,7 +64,7 @@ typeof window // => object
 
 - toString
 
-```js
+```javascript
 Object.prototype.toString.call('') // =>[object String]
 Object.prototype.toString.call(1) // => [object Number]
 Object.prototype.toString.call(true) // => [object Boolean]
@@ -86,7 +86,7 @@ toString() 是 Object 的原型方法，调用该方法，默认返回当前对�
 
 - constructor
 
-```js
+```javascript
 ''.constructor == String // => true
 new Number(1).constructor == Number // => true
 true.constructor == Boolean // => true
@@ -682,3 +682,842 @@ foo();
 
 函数的声明和IIFE的区别在于，在函数的声明中，我们首先看到的是function关键字，而IIFE我们首先看到的是左边的（。也就是说，使用一对（）将函数的声明括起来，使得JS编译器不再认为这是一个函数声明，而是一个IIFE，即需要立刻执行声明的函数。
 两者达到的目的是相同的，都是声明了一个函数foo并且随后调用函数foo。
+
+#### 7.3 不要在非函数块（`if`、`while`等等）内声明函数。把这个函数分配给一个变量。浏览器会允许你这样做，但浏览器解析方式不同，这是一个坏消息。【详见no-loop-func】 eslint: `no-loop-func`
+
+#### 7.4 Note: 在ECMA-262中 [块 `block`] 的定义是： 一系列的语句； 但是函数声明不是一个语句。 函数表达式是一个语句。
+
+```javascript
+// bad
+if (currentUser) {
+  function test() {
+    console.log('Nope.');
+  }
+}
+
+// good
+let test;
+if (currentUser) {
+  test = () => {
+    console.log('Yup.');
+  };
+}
+```
+
+#### 7.5 不要用`arguments`命名参数。他的优先级高于每个函数作用域自带的`arguments`对象， 这会导致函数自带的`arguments`值被覆盖
+
+```javascript
+// bad
+function foo(name, options, arguments) {
+  // ...
+}
+
+// good
+function foo(name, options, args) {
+  // ...
+}
+```
+
+#### 7.6 不要使用`arguments`，用rest语法`...`代替。 eslint: `prefer-rest-params`
+
+> Why? ...明确你想用那个参数。而且rest参数是真数组，而不是类似数组的arguments
+
+```javascript
+// bad
+function concatenateAll() {
+  const args = Array.prototype.slice.call(arguments);
+  return args.join('');
+}
+
+// good
+function concatenateAll(...args) {
+  return args.join('');
+}
+```
+
+#### 7.7 用默认参数语法而不是在函数里对参数重新赋值。
+
+```javascript
+// really bad
+function handleThings(opts) {
+  // 不， 我们不该改arguments
+  // 第二： 如果 opts 的值为 false, 它会被赋值为 {}
+  // 虽然你想这么写， 但是这个会带来一些细微的bug
+  opts = opts || {};
+  // ...
+}
+
+// still bad
+function handleThings(opts) {
+  if (opts === void 0) {
+    opts = {};
+  }
+  // ...
+}
+
+// good
+function handleThings(opts = {}) {
+  // ...
+}
+```
+
+#### 7.8 默认参数避免副作用
+
+> Why? 他会令人迷惑不解， 比如下面这个， a到底等于几， 这个需要想一下。
+
+```javascript
+var b = 1;
+// bad
+function count(a = b++) {
+  console.log(a);
+}
+count();  // 1
+count();  // 2
+count(3); // 3
+count();  // 3
+```
+
+#### 7.9 把默认参数赋值放在最后
+
+```javascript
+// bad
+function handleThings(opts = {}, name) {
+  // ...
+}
+
+// good
+function handleThings(name, opts = {}) {
+  // ...
+}
+```
+
+#### 7.10 不要用函数构造器创建函数。 eslint: `no-new-func`
+
+> Why? 以这种方式创建函数将类似于字符串 eval()，这会打开漏洞。
+
+```javascript
+// bad
+var add = new Function('a', 'b', 'return a + b');
+
+// still bad
+var subtract = Function('a', 'b', 'return a - b');
+```
+
+#### 7.11 函数签名部分要有空格。eslint: `space-before-function-paren` `space-before-blocks`
+
+> Why? 统一性好，而且在你添加/删除一个名字的时候不需要添加/删除空格
+
+```javascript
+// bad
+const f = function(){};
+const g = function (){};
+const h = function() {};
+
+// good
+const x = function () {};
+const y = function a() {};
+```
+
+#### 7.12 不要改参数. eslint: `no-param-reassign`
+
+> Why? 操作参数对象对原始调用者会导致意想不到的副作用。 就是不要改参数的数据结构，保留参数原始值和数据结构。
+
+```javascript
+// bad
+function f1(obj) {
+  obj.key = 1;
+};
+
+// good
+function f2(obj) {
+  const key = Object.prototype.hasOwnProperty.call(obj, 'key') ? obj.key : 1;
+};
+```
+
+#### 7.13 不要对参数重新赋值。 eslint: `no-param-reassign`
+
+> Why? 参数重新赋值会导致意外行为，尤其是对 arguments。这也会导致优化问题，特别是在V8里
+
+```javascript
+// bad
+function f1(a) {
+  a = 1;
+  // ...
+}
+
+function f2(a) {
+  if (!a) { a = 1; }
+  // ...
+}
+
+// good
+function f3(a) {
+  const b = a || 1;
+  // ...
+}
+
+function f4(a = 1) {
+  // ...
+}
+```
+
+#### 7.14 用spread操作符...去调用多变的函数更好。 eslint: `prefer-spread`
+
+> Why? 这样更清晰，你不必提供上下文，而且你不能轻易地用apply来组成new
+
+```javascript
+// bad
+const x = [1, 2, 3, 4, 5];
+console.log.apply(console, x);
+
+// good
+const x = [1, 2, 3, 4, 5];
+console.log(...x);
+
+// bad
+new (Function.prototype.bind.apply(Date, [null, 2016, 8, 5]));
+
+// good
+new Date(...[2016, 8, 5]);
+```
+
+#### 7.15 调用或者书写一个包含多个参数的函数应该像这个指南里的其他多行代码写法一样： 每行值包含一个参数，每行逗号结尾。
+
+```javascript
+// bad
+function foo(bar,
+             baz,
+             quux) {
+  // ...
+}
+
+// good 缩进不要太过分
+function foo(
+  bar,
+  baz,
+  quux,
+) {
+  // ...
+}
+
+// bad
+console.log(foo,
+  bar,
+  baz);
+
+// good
+console.log(
+  foo,
+  bar,
+  baz,
+);
+```
+
+### Arrow Functions
+
+#### 8.1 当你一定要用函数表达式（在回调函数里）的时候就用箭头表达式吧。 eslint: `prefer-arrow-callback`, `arrow-spacing`
+
+> Why? 他创建了一个this的当前执行上下文的函数的版本，这通常就是你想要的；而且箭头函数是更简洁的语法
+
+> Why? 什么时候不用箭头函数： 如果你有一个相当复杂的函数，你可能会把这个逻辑移出到他自己的函数声明里。
+
+```javascript
+// bad
+[1, 2, 3].map(function (x) {
+  const y = x + 1;
+  return x * y;
+});
+
+// good
+[1, 2, 3].map((x) => {
+  const y = x + 1;
+  return x * y;
+});
+```
+
+#### 8.2 如果函数体由一个没有副作用的表达式语句组成，删除大括号和`return`。否则，继续用大括号和 `return` 语句。 eslint: `arrow-parens`, `arrow-body-style`
+
+> Why? 语法糖，当多个函数链在一起的时候好读
+
+```javascript
+// bad
+[1, 2, 3].map(number => {
+  const nextNumber = number + 1;
+  `A string containing the ${nextNumber}.`;
+});
+
+// good
+[1, 2, 3].map(number => `A string containing the ${number}.`);
+
+// good
+[1, 2, 3].map((number) => {
+  const nextNumber = number + 1;
+  return `A string containing the ${nextNumber}.`;
+});
+
+// good
+[1, 2, 3].map((number, index) => ({
+  [index]: number
+}));
+
+// 表达式有副作用就不要用隐式return
+function foo(callback) {
+  const val = callback();
+  if (val === true) {
+    // Do something if callback returns true
+  }
+}
+
+let bool = false;
+
+// bad
+// 这种情况会return bool = true, 不好
+foo(() => bool = true);
+
+// good
+foo(() => {
+  bool = true;
+});
+```
+
+#### 8.3 万一表达式涉及多行，把他包裹在圆括号里更可读。
+
+> Why? 这样清晰的显示函数的开始和结束
+
+```javascript
+// bad
+['get', 'post', 'put'].map(httpMethod => Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod
+  )
+);
+
+// good
+['get', 'post', 'put'].map(httpMethod => (
+  Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod
+  )
+));
+```
+
+#### 8.4 如果你的函数只有一个参数并且函数体没有大括号，就删除圆括号。否则，参数总是放在圆括号里。 注意： 一直用圆括号也是没问题，只需要配置 “always” option for eslint. eslint: `arrow-parens`
+
+> Why? 这样少一些混乱， 其实没啥语法上的讲究，就保持一个风格。
+
+```javascript
+// bad
+[1, 2, 3].map((x) => x * x);
+
+// good
+[1, 2, 3].map(x => x * x);
+
+// good
+[1, 2, 3].map(number => (
+  `A long string with the ${number}. It’s so long that we don’t want it to take up space on the .map line!`
+));
+
+// bad
+[1, 2, 3].map(x => {
+  const y = x + 1;
+  return x * y;
+});
+
+// good
+[1, 2, 3].map((x) => {
+  const y = x + 1;
+  return x * y;
+});
+```
+
+#### 8.5 避免箭头函数(`=>`)和比较操作符（`<=`, `>=`）混淆. eslint: `no-confusing-arrow`
+
+```javascript
+// bad
+const itemHeight = (item) => item.height <= 256 ? item.largeSize : item.smallSize;
+
+// bad
+const itemHeight = (item) => item.height >= 256 ? item.largeSize : item.smallSize;
+
+// good
+const itemHeight = (item) => (item.height <= 256 ? item.largeSize : item.smallSize);
+
+// good
+const itemHeight = (item) => {
+  const { height, largeSize, smallSize } = item;
+  return height <= 256 ? largeSize : smallSize;
+};
+```
+
+#### 8.6 在隐式`return`中强制约束函数体的位置， 就写在箭头后面。 eslint: `implicit-arrow-linebreak`
+
+```javascript
+// bad
+(foo) =>
+  bar;
+
+(foo) =>
+  (bar);
+
+// good
+(foo) => bar;
+(foo) => (bar);
+(foo) => (
+   bar
+)
+```
+
+### Classes & Constructors
+
+#### 9.1 常用class，避免直接操作prototype
+
+> Why? class语法更简洁更易理解
+
+```javascript
+// bad
+function Queue(contents = []) {
+  this.queue = [...contents];
+}
+Queue.prototype.pop = function () {
+  const value = this.queue[0];
+  this.queue.splice(0, 1);
+  return value;
+};
+
+
+// good
+class Queue {
+  constructor(contents = []) {
+    this.queue = [...contents];
+  }
+  pop() {
+    const value = this.queue[0];
+    this.queue.splice(0, 1);
+    return value;
+  }
+}
+```
+
+#### 9.2 用extends实现继承
+
+> Why? 它是一种内置的方法来继承原型功能而不打破instanceof
+
+```javascript
+// bad
+const inherits = require('inherits');
+function PeekableQueue(contents) {
+  Queue.apply(this, contents);
+}
+inherits(PeekableQueue, Queue);
+PeekableQueue.prototype.peek = function () {
+  return this.queue[0];
+}
+
+// good
+class PeekableQueue extends Queue {
+  peek() {
+    return this.queue[0];
+  }
+}
+```
+
+#### 9.3 方法可以返回this来实现方法链
+
+```javascript
+// bad
+Jedi.prototype.jump = function () {
+  this.jumping = true;
+  return true;
+};
+
+Jedi.prototype.setHeight = function (height) {
+  this.height = height;
+};
+
+const luke = new Jedi();
+luke.jump(); // => true
+luke.setHeight(20); // => undefined
+
+// good
+class Jedi {
+  jump() {
+    this.jumping = true;
+    return this;
+  }
+
+  setHeight(height) {
+    this.height = height;
+    return this;
+  }
+}
+
+const luke = new Jedi();
+
+luke.jump()
+  .setHeight(20);
+```
+
+#### 9.4 写一个定制的`toString()`方法是可以的，只要保证它是可以正常工作且没有副作用的
+
+```javascript
+class Jedi {
+  constructor(options = {}) {
+    this.name = options.name || 'no name';
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  toString() {
+    return `Jedi - ${this.getName()}`;
+  }
+}
+```
+
+#### 9.5 如果没有具体说明，类有默认的构造方法。一个空的构造函数或只是代表父类的构造函数是不需要写的。 eslint: `no-useless-constructor`
+
+```javascript
+// bad
+class Jedi {
+  constructor() {}
+
+  getName() {
+    return this.name;
+  }
+}
+
+// bad
+class Rey extends Jedi {
+  // 这种构造函数是不需要写的
+  constructor(...args) {
+    super(...args);
+  }
+}
+
+// good
+class Rey extends Jedi {
+  constructor(...args) {
+    super(...args);
+    this.name = 'Rey';
+  }
+}
+```
+
+#### 9.6 避免重复类成员。 eslint: `no-dupe-class-members`
+
+> Why? 重复类成员会默默的执行最后一个 —— 重复本身也是一个bug
+
+```javascript
+// bad
+class Foo {
+  bar() { return 1; }
+  bar() { return 2; }
+}
+
+// good
+class Foo {
+  bar() { return 1; }
+}
+
+// good
+class Foo {
+  bar() { return 2; }
+}
+```
+
+#### 9.7 除非外部库或框架需要使用特定的非静态方法，否则类方法应该使用this或被做成静态方法。 作为一个实例方法应该表明它根据接收者的属性有不同的行为。eslint: `class-methods-use-this`
+
+```javascript
+// bad
+class Foo {
+  bar() {
+    console.log('bar');
+  }
+}
+
+// good - this 被使用了
+class Foo {
+  bar() {
+    console.log(this.bar);
+  }
+}
+
+// good - constructor 不一定要使用this
+class Foo {
+  constructor() {
+    // ...
+  }
+}
+
+// good - 静态方法不需要使用 this
+class Foo {
+  static bar() {
+    console.log('bar');
+  }
+}
+```
+
+### Modules
+
+#### 10.1 用(`import/export`) 模块而不是无标准的模块系统。你可以随时转到你喜欢的模块系统。
+
+> Why? 模块化是未来，让我们现在就开启未来吧。
+
+```javascript
+// bad
+const AirbnbStyleGuide = require('./AirbnbStyleGuide');
+module.exports = AirbnbStyleGuide.es6;
+
+// ok
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+export default AirbnbStyleGuide.es6;
+
+// best
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+#### 10.2 不要用import通配符， 就是 * 这种方式
+
+> Why? 这确保你有单个默认的导出
+
+```javascript
+// bad
+import * as AirbnbStyleGuide from './AirbnbStyleGuide';
+
+// good
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+```
+
+#### 10.3 不要直接从`import`中直接`export`
+
+> Why? 虽然一行是简洁的，有一个明确的方式进口和一个明确的出口方式来保证一致性。
+
+```javascript
+// bad
+// filename es6.js
+export { es6 as default } from './AirbnbStyleGuide';
+
+// good
+// filename es6.js
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+#### 10.4 一个路径只 `import` 一次。 eslint: `no-duplicate-imports`
+
+> Why? 从同一个路径下import多行会使代码难以维护
+
+```javascript
+// bad
+import foo from 'foo';
+// … some other imports … //
+import { named1, named2 } from 'foo';
+
+// good
+import foo, { named1, named2 } from 'foo';
+
+// good
+import foo, {
+  named1,
+  named2,
+} from 'foo';
+```
+
+#### 10.5 不要导出可变的东西 eslint: `import/no-mutable-exports`
+
+> Why? 变化通常都是需要避免，特别是当你要输出可变的绑定。虽然在某些场景下可能需要这种技术，但总的来说应该导出常量。
+
+```javascript
+// bad
+let foo = 3;
+export { foo }
+
+// good
+const foo = 3;
+export { foo }
+```
+
+#### 10.6 在一个单一导出模块里，用 `export default` 更好。 eslint: `import/prefer-default-export`
+
+> Why? 鼓励使用更多文件，每个文件只做一件事情并导出，这样可读性和可维护性更好。
+
+```javascript
+// bad
+export function foo() {}
+
+// good
+export default function foo() {}
+```
+
+#### 10.7 import 放在其他所有语句之前。 eslint: `import/first`
+
+> Why? 让import放在最前面防止意外行为。
+
+```javascript
+// bad
+import foo from 'foo';
+foo.init();
+
+import bar from 'bar';
+
+// good
+import foo from 'foo';
+import bar from 'bar';
+
+foo.init();
+```
+
+#### 10.8 多行`import`应该缩进，就像多行数组和对象字面量
+
+> Why? 花括号与样式指南中每个其他花括号块遵循相同的缩进规则，逗号也是。
+
+```javascript
+// bad
+import {longNameA, longNameB, longNameC, longNameD, longNameE} from 'path';
+
+// good
+import {
+  longNameA,
+  longNameB,
+  longNameC,
+  longNameD,
+  longNameE,
+} from 'path';
+```
+
+####  10.9 在import语句里不允许Webpack loader语法 eslint: `import/no-webpack-loader-syntax`
+
+> Why? 一旦用Webpack语法在import里会把代码耦合到模块绑定器。最好是在webpack.config.js里写webpack loader语法
+
+```javascript
+// bad
+import fooSass from 'css!sass!foo.scss';
+import barCss from 'style!css!bar.css';
+
+// good
+import fooSass from 'foo.scss';
+import barCss from 'bar.css';
+```
+
+### Iterators and Generators
+
+#### 11.1 不要用遍历器。用JavaScript高级函数代替for-in、 for-of。 eslint: `no-iterator no-restricted-syntax`
+
+> Why? 这强调了我们不可变的规则。 处理返回值的纯函数比副作用更容易。
+
+> Why?用数组的这些迭代方法： 
+>  - map()
+>  - every()
+>  - filter() 
+>  - find()
+>  - findIndex()
+>  - reduce()
+>  - some()
+>  - ... , 
+>
+>  用对象的这些方法 
+>  - Object.keys()
+>  - Object.values()
+>  - Object.entries() 
+>
+>  去产生一个数组， 这样你就能去遍历对象了。
+>
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// bad
+let sum = 0;
+for (let num of numbers) {
+  sum += num;
+}
+sum === 15;
+
+// good
+let sum = 0;
+numbers.forEach(num => sum += num);
+sum === 15;
+
+// best (use the functional force)
+const sum = numbers.reduce((total, num) => total + num, 0);
+sum === 15;
+
+// bad
+const increasedByOne = [];
+for (let i = 0; i < numbers.length; i++) {
+  increasedByOne.push(numbers[i] + 1);
+}
+
+// good
+const increasedByOne = [];
+numbers.forEach(num => increasedByOne.push(num + 1));
+
+// best (keeping it functional)
+const increasedByOne = numbers.map(num => num + 1);
+```
+
+#### 11.2 现在不要用generator
+
+> Why? 它在es5上支持的不好
+
+#### 11.3 如果你一定要用，或者你忽略我们的建议, 请确保它们的函数签名空格是得当的。 eslint: `generator-star-spacing`
+
+> Why? function 和 * 是同一概念关键字 - *不是function的修饰符，function*是一个和function不一样的独特结构
+
+```javascript
+// bad
+function * foo() {
+  // ...
+}
+
+// bad
+const bar = function * () {
+  // ...
+}
+
+// bad
+const baz = function *() {
+  // ...
+}
+
+// bad
+const quux = function*() {
+  // ...
+}
+
+// bad
+function*foo() {
+  // ...
+}
+
+// bad
+function *foo() {
+  // ...
+}
+
+// very bad
+function
+*
+foo() {
+  // ...
+}
+
+// very bad
+const wat = function
+*
+() {
+  // ...
+}
+
+// good
+function* foo() {
+  // ...
+}
+
+// good
+const foo = function* () {
+  // ...
+}
+```
