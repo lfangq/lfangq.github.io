@@ -110,7 +110,6 @@ constructor 是原型 prototype 的一个属性，当函数被定义时候，js 
 
   instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回 true,否则返回 false。 在这里需要特别注意的是：instanceof 检测的是原型
 
-![](0.png)
 
 由上图可以看出[]的原型指向 Array.prototype，间接指向 Object.prototype, 因此 [] instanceof Array 返回 true， [] instanceof Object 也返回 true。
 
