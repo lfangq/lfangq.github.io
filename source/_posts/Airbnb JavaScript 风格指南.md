@@ -1521,3 +1521,480 @@ const foo = function* () {
   // ...
 }
 ```
+
+### Properties
+
+#### 12.1 访问属性时使用点符号. eslint: `dot-notation`
+
+```javascript
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+// bad
+const isJedi = luke['jedi'];
+
+// good
+const isJedi = luke.jedi;
+```
+
+#### 12.2 当获取的属性是变量时用方括号`[]`取。
+
+```javascript
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+function getProp(prop) {
+  return luke[prop];
+}
+
+const isJedi = getProp('jedi');
+```
+
+#### 12.3 做幂运算时用幂操作符 `**` 。 eslint: `no-restricted-properties`.
+
+```javascript
+// bad
+const binary = Math.pow(2, 10);
+
+// good
+const binary = 2 ** 10;
+```
+
+### Variables
+
+#### 13.1 用`const`或`let`声明变量。不这样做会导致全局变量。 我们想要避免污染全局命名空间。首长这样警告我们。 eslint: `no-undef` `prefer-const`
+
+```javascript
+// bad
+superPower = new SuperPower();
+
+// good
+const superPower = new SuperPower();
+```
+
+#### 13.2 每个变量都用一个 const 或 let 。 eslint: `one-var`
+
+> Why? 这种方式很容易去声明新的变量，你不用去考虑把;调换成,，或者引入一个只有标点的不同的变化。这种做法也可以是你在调试的时候单步每个声明语句，而不是一下跳过所有声明。
+
+```javascript
+// bad
+const items = getItems(),
+    goSportsTeam = true,
+    dragonball = 'z';
+
+// bad
+// (compare to above, and try to spot the mistake)
+const items = getItems(),
+    goSportsTeam = true;
+    dragonball = 'z';
+
+// good
+const items = getItems();
+const goSportsTeam = true;
+const dragonball = 'z';
+```
+
+#### 13.3 const放一起，let放一起
+
+> Why? 在你需要分配一个新的变量， 而这个变量依赖之前分配过的变量的时候，这种做法是有帮助的
+
+```javascript
+// bad
+let i, len, dragonball,
+    items = getItems(),
+    goSportsTeam = true;
+
+// bad
+let i;
+const items = getItems();
+let dragonball;
+const goSportsTeam = true;
+let len;
+
+// good
+const goSportsTeam = true;
+const items = getItems();
+let dragonball;
+let i;
+let length;
+```
+
+#### 13.4 在你需要的地方声明变量，但是要放在合理的位置
+
+> Why? let 和 const 都是块级作用域而不是函数级作用域
+
+```javascript
+// bad - unnecessary function call
+function checkName(hasName) {
+  const name = getName();
+
+  if (hasName === 'test') {
+    return false;
+  }
+
+  if (name === 'test') {
+    this.setName('');
+    return false;
+  }
+
+  return name;
+}
+
+// good
+function checkName(hasName) {
+  if (hasName === 'test') {
+    return false;
+  }
+
+  // 在需要的时候分配
+  const name = getName();
+
+  if (name === 'test') {
+    this.setName('');
+    return false;
+  }
+
+  return name;
+}
+```
+
+#### 13.5 不要使用链接变量分配。 eslint: `no-multi-assign`
+
+> Why? 链接变量分配创建隐式全局变量。
+
+```javascript
+// bad
+(function example() {
+  // JavaScript 将这一段解释为
+  // let a = ( b = ( c = 1 ) );
+  // let 只对变量 a 起作用; 变量 b 和 c 都变成了全局变量
+  let a = b = c = 1;
+}());
+
+console.log(a); // undefined
+console.log(b); // 1
+console.log(c); // 1
+
+// good
+(function example() {
+  let a = 1;
+  let b = a;
+  let c = a;
+}());
+
+console.log(a); // undefined
+console.log(b); // undefined
+console.log(c); // undefined
+
+// `const` 也是如此
+```
+
+#### 13.6 不要使用一元自增自减运算符（++， --）. eslint: `no-plusplus`
+
+> Why? 根据eslint文档，一元增量和减量语句受到自动分号插入的影响，并且可能会导致应用程序中的值递增或递减的无声错误。 使用num + = 1而不是num ++或num ++语句来表达你的值也是更有表现力的。 禁止一元增量和减量语句还会阻止您无意地预增/预减值，这也会导致程序出现意外行为。
+
+```javascript
+ // bad
+
+  const array = [1, 2, 3];
+  let num = 1;
+  num++;
+  --num;
+
+  let sum = 0;
+  let truthyCount = 0;
+  for (let i = 0; i < array.length; i++) {
+    let value = array[i];
+    sum += value;
+    if (value) {
+      truthyCount++;
+    }
+  }
+
+  // good
+
+  const array = [1, 2, 3];
+  let num = 1;
+  num += 1;
+  num -= 1;
+
+  const sum = array.reduce((a, b) => a + b, 0);
+  const truthyCount = array.filter(Boolean).length;
+```
+
+#### 13.7 在赋值的时候避免在 = 前/后换行。 如果你的赋值语句超出 max-len， 那就用小括号把这个值包起来再换行。 eslint: `operator-linebreak`.
+
+> Why? 在 = 附近换行容易混淆这个赋值语句。
+
+```javascript
+// bad
+const foo =
+  superLongLongLongLongLongLongLongLongFunctionName();
+
+// bad
+const foo
+  = 'superLongLongLongLongLongLongLongLongString';
+
+// good
+const foo = (
+  superLongLongLongLongLongLongLongLongFunctionName()
+);
+
+// good
+const foo = 'superLongLongLongLongLongLongLongLongString';
+```
+
+#### 13.8 不允许有未使用的变量。 eslint: `no-unused-vars`
+
+> Why? 一个声明了但未使用的变量更像是由于重构未完成产生的错误。这种在代码中出现的变量会使阅读者迷惑。
+
+```javascript
+// bad
+
+var some_unused_var = 42;
+
+// 写了没用
+var y = 10;
+y = 5;
+
+// 变量改了自己的值，也没有用这个变量
+var z = 0;
+z = z + 1;
+
+// 参数定义了但未使用
+function getX(x, y) {
+    return x;
+}
+
+// good
+function getXPlusY(x, y) {
+  return x + y;
+}
+
+var x = 1;
+var y = a + 2;
+
+alert(getXPlusY(x, y));
+
+// 'type' 即使没有使用也可以可以被忽略， 因为这个有一个 rest 取值的属性。
+// 这是从对象中抽取一个忽略特殊字段的对象的一种形式
+var { type, ...coords } = data;
+// 'coords' 现在就是一个没有 'type' 属性的 'data' 对象
+```
+
+### Hoisting
+
+#### 14.1 var声明会被提前到他的作用域的最前面，它分配的值还没有提前。const 和 let被赋予了新的调用概念时效区 —— Temporal Dead Zones (TDZ)。 重要的是要知道为什么 typeof不再安全.
+
+```javascript
+// 我们知道这个不会工作，假设没有定义全局的notDefined
+function example() {
+  console.log(notDefined); // => throws a ReferenceError
+}
+
+// 在你引用的地方之后声明一个变量，他会正常输出是因为变量作用域上升。
+// 注意： declaredButNotAssigned的值没有上升
+function example() {
+  console.log(declaredButNotAssigned); // => undefined
+  var declaredButNotAssigned = true;
+}
+
+// 解释器把变量声明提升到作用域最前面，
+// 可以重写成如下例子， 二者意义相同
+function example() {
+  let declaredButNotAssigned;
+  console.log(declaredButNotAssigned); // => undefined
+  declaredButNotAssigned = true;
+}
+
+// 用 const， let就不一样了
+function example() {
+  console.log(declaredButNotAssigned); // => throws a ReferenceError
+  console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
+  const declaredButNotAssigned = true;
+}
+```
+
+#### 14.2 匿名函数表达式和 `var` 情况相同
+
+```javascript
+function example() {
+  console.log(anonymous); // => undefined
+
+  anonymous(); // => TypeError anonymous is not a function
+
+  var anonymous = function () {
+    console.log('anonymous function expression');
+  };
+}
+```
+
+#### 14.3 已命名函数表达式提升他的变量名，不是函数名或函数体
+
+```javascript
+function example() {
+  console.log(named); // => undefined
+
+  named(); // => TypeError named is not a function
+
+  superPower(); // => ReferenceError superPower is not defined
+
+  var named = function superPower() {
+    console.log('Flying');
+  };
+}
+
+// 函数名和变量名一样是也如此
+function example() {
+  console.log(named); // => undefined
+
+  named(); // => TypeError named is not a function
+
+  var named = function named() {
+    console.log('named');
+  };
+}
+```
+
+#### 14.4 函数声明则提升了函数名和函数体
+```javascript
+function example() {
+  superPower(); // => Flying
+
+  function superPower() {
+    console.log('Flying');
+  }
+}
+```
+
+### Comparison Operators & Equality
+
+#### 15.1 用 === 和 !== 而不是 == 和 !=. eslint: `eqeqeq`
+
+#### 15.2 条件语句如'if'语句使用强制`ToBoolean'抽象方法来评估它们的表达式，并且始终遵循以下简单规则：
+- Objects 计算成 true
+- Undefined 计算成 false
+- Null 计算成 false
+- Booleans 计算成 the value of the boolean
+- Numbers
+- +0, -0, or NaN 计算成 false
+- 其他 true
+- Strings
+- '' 计算成 false
+- 其他 true
+
+```javascript
+if ([0] && []) {
+  // true
+  // 数组（即使是空数组）是对象，对象会计算成true
+}
+```
+
+# 15.3 布尔值用缩写，而字符串和数字要明确比较对象
+
+```javascript
+// bad
+if (isValid === true) {
+  // ...
+}
+
+// good
+if (isValid) {
+  // ...
+}
+
+// bad
+if (name) {
+  // ...
+}
+
+// good
+if (name !== '') {
+  // ...
+}
+
+// bad
+if (collection.length) {
+  // ...
+}
+
+// good
+if (collection.length > 0) {
+  // ...
+}
+```
+
+#### 15.4 更多信息请见Angus Croll的真理、平等和JavaScript —— Truth Equality and JavaScript
+
+#### 在`case`和`default`分句里用大括号创建一块包含语法声明的区域(e.g. `let`, `const`, `function`, and `class`). eslint: `no-case-declarations`.
+
+> Why? 语法声明在整个switch的代码块里都可见，但是只有当其被分配后才会初始化，他的初始化时当这个case被执行时才产生。 当多个case分句试图定义同一个事情时就出问题了
+
+```javascript
+// bad
+switch (foo) {
+  case 1:
+    let x = 1;
+    break;
+  case 2:
+    const y = 2;
+    break;
+  case 3:
+    function f() {
+      // ...
+    }
+    break;
+  default:
+    class C {}
+}
+
+// good
+switch (foo) {
+  case 1: {
+    let x = 1;
+    break;
+  }
+  case 2: {
+    const y = 2;
+    break;
+  }
+  case 3: {
+    function f() {
+      // ...
+    }
+    break;
+  }
+  case 4:
+    bar();
+    break;
+  default: {
+    class C {}
+  }
+}
+```
+
+#### 15.6 三元表达式不应该嵌套，通常是单行表达式。eslint: `no-nested-ternary`.
+
+```javascript
+// bad
+const foo = maybe1 > maybe2
+  ? "bar"
+  : value1 > value2 ? "baz" : null;
+
+// better
+const maybeNull = value1 > value2 ? 'baz' : null;
+
+const foo = maybe1 > maybe2
+  ? 'bar'
+  : maybeNull;
+
+// best
+const maybeNull = value1 > value2 ? 'baz' : null;
+
+const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+```
+

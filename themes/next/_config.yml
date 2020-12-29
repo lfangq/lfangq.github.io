@@ -414,7 +414,7 @@ font:
   global:
     external: true
     family: Roboto Slab
-    size: 20px
+    size: 18px
 
   # Font settings for site title (.site-title).
   title:
@@ -426,12 +426,12 @@ font:
   headings:
     external: true
     family: Roboto Slab
-    size: 24px
+    size: 21px
 
   # Font settings for posts (.post-body).
   posts:
     external: true
-    family: PT Mono
+    family: Roboto Slab
 
   # Font settings for <code> and code blocks.
   codes:
