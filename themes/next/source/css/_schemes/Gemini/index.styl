@@ -28,14 +28,17 @@ $use-seo = hexo-config('seo');
 // ==================================================
 // Post blocks.
 .content-wrap {
-  background: initial;
+  background: #fff;
   box-shadow: initial;
   padding: initial;
 }
 
 // Post & Comments blocks.
 .post-block {
-  background: var(--content-bg-color);
+  background-image: linear-gradient(90deg,rgba(0,0,0,.1) 3%,transparent 0),linear-gradient(1turn,rgba(0,0,0,.1) 3%,transparent 0);
+  background-size: 20px 20px;
+  background-position: 50%;
+  // background: var(--content-bg-color);
   border-radius: $border-radius-inner;
   box-shadow: $box-shadow-inner;
   padding: $content-desktop-padding;
