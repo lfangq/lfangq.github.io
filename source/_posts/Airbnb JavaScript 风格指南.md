@@ -2802,7 +2802,7 @@ var x = 1;
 var y = 2;
 ```
 
-#### Commas
+### Commas
 
 #### 20.1 不要前置逗号。 eslint: `comma-style`
 
@@ -3356,7 +3356,7 @@ $(this).on('listingUpdated', (e, data) => {
 });
 ```
 
-### jQuery
+### jQuery对象
 
 #### 26.1 jQuery对象用$变量表示。
 
