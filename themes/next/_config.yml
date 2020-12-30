@@ -414,7 +414,7 @@ font:
   global:
     external: true
     family: PingFang SC
-    size: 15px
+    size: 10px
 
   # Font settings for site title (.site-title).
   title:
@@ -426,13 +426,13 @@ font:
   headings:
     external: true
     family: PingFang SC
-    size: 18px
+    size: 15px
 
   # Font settings for posts (.post-body).
   posts:
     external: true
     family: PingFang SC
-    size: 15px
+    size: 10px
 
   # Font settings for <code> and code blocks.
   codes:
