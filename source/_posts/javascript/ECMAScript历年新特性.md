@@ -9,6 +9,7 @@ tags: [javascript]
 > 引用： https://blog.csdn.net/weixin_41849462/article/details/105813995
 
 `String.prototype.match()`方法仅返回完整的匹配结果，却不会返回特定正则表达式组（Regex groups）的信息, 而`String.prototype.matchAll`它返回的迭代器不仅包括精确的匹配结果，还有全部的正则模式捕获结果。
+
 ```javascript
 // match() 方法
 const text = "From 2019.01.29 to 2019.01.30";
@@ -20,6 +21,7 @@ const results = text.match(regexp);
 console.log(results);
 // [ '2019.01.29', '2019.01.30' ]
 ```
+
 ```javascript
 // matchAll() 方法，可以看到结果的 groups 为命名捕获组
 const text = "From 2019.01.29 to 2019.01.30";
@@ -598,3 +600,313 @@ foo`\undfdfdf`;
 // es9以前报错
 // es9:[undefined, raw:["\undfdfdf"]]
 ```
+
+### ES8新特性(ECMAScript2017)
+
+#### async/await
+
+> 1. async/await是继es6中promise、generator后又一种更加优雅的异步编程的解决方案
+> 
+> 2. async函数是generator函数的语法糖
+
+基本用法:
+
+```javascript
+// 不使用async/await
+function getPromise() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(1);
+      resolve(2);
+    }, 1000);
+  });
+}
+
+function foo() {
+  const res = getPromise();
+  console.log(res);
+  console.log(3);
+}
+
+foo();
+// Promise {<pending>}
+// 3
+// 1
+
+// 使用async/await
+async function foo() {
+  const res = await getPromise();
+  console.log(res);
+  console.log(3);
+}
+
+foo();
+
+// 1
+// 2
+// 3
+```
+
+由上面两个例子的对比就能发现，async/await可以使异步任务处理起来像是同步任务，这是因为await关键字在执行的时候会停下来，等待异步任务执行完毕(await后面一般跟的是异步任务，否则没有意义)在继续执行同步任务。
+
+更优雅的异步编程的解决方案:
+
+在es6之前我们对于这个过程应该不陌生
+```javascript
+ajax('xxx/a', res => {
+    console.log(res)
+    ajax('xxx/b', res => {
+        console.log(res)
+        ajax('xxx/c', res => {
+            console.log(res)
+        })
+    })
+})
+```
+
+这种回调之后再回调的调用方式我们称之为“回调地狱”，这种回调方式在日常开发和项目维护当中很让人头疼。我们对比下es6中Promise的处理和es8中的async/await的处理方式就知道了为什么我们称async/await为更优雅的异步编程的解决方案。
+
+```javascript
+// 以下都是模拟接口请求的代码
+// Promise
+function getPromise(url) {
+    return new Promise((resolve, reject) => {
+        ajax(url, res => {
+            resolve(res)
+        }, err => {
+            reject(err)
+        })
+    })
+}
+
+getPromise('xxx/a')
+    .then(res => {
+        console.log(res)
+        return getPromise('xxx/b')
+    }).then(res => {
+        console.log(res)
+        return getPromise('xxx/c')
+    }).then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+    
+    
+ // async/await
+ function request(url) {
+    return new Promise(resolve => {
+        ajax(url, res => {
+            resolve(res)
+        })
+    })
+}
+async function getData() {
+    let res1 = await request('xxx/a')
+    console.log(res1)
+    let res2 = await request('xxx/b')
+    console.log(res2)
+    let res3 = await request('xxx/c')
+    console.log(res3)
+}
+getData()
+```
+
+从两者的对比可以看出，Promise虽然将回调嵌套回调的方式改成平级调用，但是这种调用方式相比于async/await还是显得繁琐，而且async/await不存在回调。
+
+#### Object.values()/Object.entries()
+
+- Object.values()
+
+  Object.values() 返回一个数组，其元素是在对象上找到的可枚举属性值。
+
+```javascript
+const obj = {
+  name: "张三",
+  age: 18,
+  sex: "male",
+}
+console.log(Object.values(obj)) // ["张三", 18, "male"]
+```
+
+- Object.entries
+
+  Object.entries()方法返回一个给定对象自身可枚举属性的键值对数组。
+
+```javascript
+const obj = {
+  name: "张三",
+  age: 18,
+  sex: "male",
+}
+console.log(Object.entries(obj))
+// [["name", "张三"],["age", "18"], ["sex", "male"]]
+```
+
+for in可以遍历出原型链上的可枚举属性，而Object.keys()/Object.values()/Object.entries()只能遍历自身的可枚举属性
+
+```javascript
+const obj = {
+  name: "张三",
+  age: 18,
+  sex: "male",
+}
+Object.prototype.test = "test"
+
+for (let key in obj) {
+  console.log(obj[key])
+}
+//  "张三", 18, "male","test"
+console.log(Object.keys(obj).map(key => obj[key]))
+// ["张三", 18, "male"]
+console.log(Object.values(obj))
+// ["张三", 18, "male"]
+console.log(Object.entries(obj).map(([key, value]) => value))
+// ["张三", 18, "male"]
+```
+
+如何实现一个Object.values()/Object.entries()
+
+```javascript
+const obj = {
+  name: "张三",
+  age: 18,
+  sex: "male",
+}
+// Object.values
+function values(obj) {
+  return Object.keys(obj).map(key => obj[key])
+}
+
+// Object.entries
+function entries(obj) {
+  return Object.keys(obj).map(key => [key, obj[key]])
+}
+
+console.log(values(obj)) 
+console.log(entries(obj))
+```
+
+#### Object.getOwnPropertyDescriptors()
+
+Object.defineProperty()可以通过对描述符的设置进行更精准的控制对象属性，所谓描述符：
+
+1. value [属性的值]
+2. writable [属性的值是否可被改变]
+3. enumerable [属性的值是否可被枚举]
+4. configurable [描述符本身是否可被修改，属性是否可被删除]
+
+```javascript
+var test = {
+  name: '测试',
+  value: 5
+}
+Object.defineProperty(test, "name", {
+  enumerable: false
+})
+
+for (let key in test) {
+  console.log(key)
+} 
+// value
+```
+
+#### Object.getOwnPropertyDescriptors ()
+
+Object.getOwnPropertyDescriptors ()可以返回对象属性的描述符
+
+```javascript
+let test = {
+  name: '测试',
+  value: 5
+}
+console.log(Object.getOwnPropertyDescriptors(test)) 
+// {
+//   name: {value: "测试", writable: true, enumerable: true, configurable: true}
+//   value: {value: 5, writable: true, enumerable: true, configurable: true}
+// }
+```
+
+Object.getOwnPropertyDescriptors(target,param)接收两个参数,返回某一个参数的描述符，通过这个方法可以实现一个Object.getOwnPropertyDescriptors ()
+
+Object.getOwnPropertyDescriptors()实现
+
+```javascript
+let test = {
+  name: '测试',
+  value: 5
+}
+
+function getOwnPropertyDescriptors(obj) {
+  const result = {};
+  for (let key of Reflect.ownKeys(obj)) {
+    result[key] = Object.getOwnPropertyDescriptor(obj, key);
+  }
+  return result;
+}
+getOwnPropertyDescriptors(test)
+```
+
+#### String.prototype.padStart()/String.prototype.padEnd()
+
+- padStart()
+  允许将空字符串或其他字符串添加到原始字符串的开头。
+
+```javascript
+console.log('13'.padStart(3, '0')); // => 013
+console.log('13'.padStart(2, '0')); // => 13
+```
+
+- padEnd()
+  允许将空字符串或其他字符串添加到原始字符串的结尾。
+
+```javascript
+console.log('13'.padStart(3, '0')); // => 130
+console.log('13'.padStart(2, '0')); // => 13
+```
+
+#### 尾逗号
+
+此前，函数定义和调用时，都不允许最后一个参数后面出现逗号,es8 允许函数的最后一个参数有尾逗号
+
+```javascript
+// es8以前
+function foo(a, b, c, d) {
+  console.log(a, b, c, d)
+}
+
+// es8
+function foo(a, b, c, d,) {
+  console.log(a, b, c, d)
+}
+```
+
+### ES7新特性(ECMAScript2017)
+
+#### Array.prototype.includes()
+
+判断一个数组是否包含一个元素
+
+```javascript
+const arr = ["es6", "es7", "es8", "es9", "es10", "es11"，NaN]
+console.log(arr.includes("es6"))   // true
+console.log(arr.includes(NaN))   // true
+console.log(arr.includes("es12"))  // false
+```
+
+includes的用法和indexOf用法相似，都可以用来判断数组中是否包含一个元素，唯一的区别在于includes可以识别NaN。
+
+> 注意
+> 1. Array.prototype.includes（）：可以接收两个参数，要搜索的值和搜索的开始索引。第二个参数可选，若为负数表示从末尾开始计数下标。
+> 2. 只能判断简单类型的数据，对于复杂类型的数据，比如对象类型的数组，二维数组，这些是无法判断的。
+
+#### 幂运算符
+
+```javascript
+console.log(2**53)
+```
+
+> 注意
+> 1. 幂运算符的两个*号之间不能出现空格，前后有无空格都可以。
+> 2. 注意最大安全数：Number.MAX_SAFE_INTEGER = (2**53)-1
+
