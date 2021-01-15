@@ -3,6 +3,9 @@ title: ECMAScript历年新特性
 date: 2020-09-21 10:01:52
 tags: [javascript]
 ---
+
+### [ES6 入门教程](https://es6.ruanyifeng.com/)
+
 ### ES11新特性 (ECMAScript2020)
 
 #### String.prototype.matchAll
