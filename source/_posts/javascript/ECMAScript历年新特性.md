@@ -7,6 +7,7 @@ tags: [javascript]
 ### [ES6 入门教程](https://es6.ruanyifeng.com/)
 
 ### ES11新特性 (ECMAScript2020)
+<!-- more -->
 
 #### String.prototype.matchAll
 > 引用： https://blog.csdn.net/weixin_41849462/article/details/105813995
