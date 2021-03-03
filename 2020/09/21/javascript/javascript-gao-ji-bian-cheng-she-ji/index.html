@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://b-gold-cdn.xitu.io/ionicons/2.0.1/fonts/ionicons.ttf?v=2.0.0/css?family=ionicons:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.lfangq.xyz","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1. ECMAScript与JavaScript区别 ECMAScript是一种脚本语言规范，JavaScript则是ECMAScript的实例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript高级编程设计">
+<meta property="og:url" content="https://www.lfangq.xyz/2020/09/21/javascript/javascript-gao-ji-bian-cheng-she-ji/index.html">
+<meta property="og:site_name" content="lfangq博客">
+<meta property="og:description" content="1. ECMAScript与JavaScript区别 ECMAScript是一种脚本语言规范，JavaScript则是ECMAScript的实例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-21T02:01:52.000Z">
+<meta property="article:modified_time" content="2021-03-03T08:44:08.918Z">
+<meta property="article:author" content="lfangq">
+<meta property="article:tag" content="book">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.lfangq.xyz/2020/09/21/javascript/javascript-gao-ji-bian-cheng-she-ji/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JavaScript高级编程设计 | lfangq博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lfangq博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.lfangq.xyz/2020/09/21/javascript/javascript-gao-ji-bian-cheng-she-ji/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="lfangq">
+      <meta itemprop="description" content="记录生活中的点点滴滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lfangq博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript高级编程设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-21 10:01:52" itemprop="dateCreated datePublished" datetime="2020-09-21T10:01:52+08:00">2020-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-03 16:44:08" itemprop="dateModified" datetime="2021-03-03T16:44:08+08:00">2021-03-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-ECMAScript与JavaScript区别">1. ECMAScript与JavaScript区别</h2>
+<p>ECMAScript是一种脚本语言规范，JavaScript则是ECMAScript的实例。</p>
+<hr>
+<a id="more"></a>
+<h2 id="2-变量和类型">2. 变量和类型</h2>
+<h3 id="基本数据类型">基本数据类型</h3>
+<ul>
+<li>null</li>
+<li>undefined</li>
+<li>number</li>
+<li>string</li>
+<li>boolean</li>
+<li>symbol(ES6)</li>
+</ul>
+<h3 id="引用类型">引用类型</h3>
+<ul>
+<li>object</li>
+<li>function</li>
+<li>array</li>
+</ul>
+<h3 id="null和undefined的区别">null和undefined的区别</h3>
+<ul>
+<li>null表示&quot;没有对象&quot;，即该处不应该有值</li>
+<li>undefined表示&quot;缺少值&quot;，就是此处应该有一个值，但是还没有定义</li>
+</ul>
+<h3 id="JavaScript对象的底层数据结构是什么">JavaScript对象的底层数据结构是什么</h3>
+<h3 id="Symbol类型在实际开发中的应用、可手动实现一个简单的Symbol">Symbol类型在实际开发中的应用、可手动实现一个简单的Symbol</h3>
+<ul>
+<li>应用: 用来定义对象的唯一属性名</li>
+<li>实现:</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Symbol</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="JavaScript中的变量在内存中的具体存储形式">JavaScript中的变量在内存中的具体存储形式</h3>
+<ul>
+<li>基本类型<br>
+基本类型是保存在栈内存中的简单数据段，它们的值都有固定的大小，保存在栈空间，通过按值访问</li>
+<li>引用类型<br>
+引用类型是保存在堆内存中的对象，值大小不固定，栈内存中存放的该对象的访问地址指向堆内存中的对象，JavaScript不允许直接访问堆内存中的位置，因此操作对象时，实际操作对象的引用</li>
+</ul>
+<h3 id="基本类型对应的内置对象，以及他们之间的装箱拆箱操作">基本类型对应的内置对象，以及他们之间的装箱拆箱操作</h3>
+<ul>
+<li>
+<p>内置对象：<br>
+Object是JavaScript 中所有对象的父对象<br><br>
+数据封装类对象：Object、Array、Boolean、Number 和 String<br><br>
+其他对象：Function、Math、Date、RegExp、Error。<br><br>
+特殊的基本包装类型(String、Number、Boolean)<br><br>
+arguments: 只存在于函数内部的一个类数组对象<br></p>
+</li>
+<li>
+<p>装箱和拆箱<br>
+引用类型有个特殊的基本包装类型，它包括String、Number和Boolean。<br><br>
+作为字符串的a可以调用方法</p>
+</li>
+<li>
+<p>装箱<br>
+基本数据类型转化为对应的引用数据类型的操作**，装箱分为隐式装箱和显示装箱</p>
+</li>
+</ul>
+<blockquote>
+<p>在《javascript高级程序设计》中有这样一句话：<br>
+每当读取一个基本类型的时候，后台就会创建一个对应的基本包装类型对象，从而让我们能够调用一些方法来操作这些数据。(隐式装箱)</p>
+</blockquote>
+<ol>
+<li>隐式装箱</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="string">&#x27;sum&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> b = a.indexof(<span class="string">&#x27;s&#x27;</span>);</span><br><span class="line"><span class="comment">// 上面代码在后台实际的步骤为：</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">&#x27;sum&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> b = a.indexof(<span class="string">&#x27;s&#x27;</span>);</span><br><span class="line">a = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，a是基本类型，它不是对象，不应该具有方法，js内部进行了一些列处理（装箱)， 使得它能够调用方法。在这个基本类型上调用方法，其实是在这个基本类型对象上调用方法。这个基本类型的对象是临时的，它只存在于方法调用那一行代码执行的瞬间，执行方法后立刻被销毁。实现机制：</p>
+<ul>
+<li>创建String类型的一个实例</li>
+<li>在实例上调用指定的方法</li>
+<li>销毁这个实例</li>
+</ul>
+<ol start="2">
+<li>显示装箱<br>
+通过内置对象可以对Boolean、Object、String等可以对基本类型显示装箱</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">&#x27;sum&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>拆箱<br>
+拆箱和装箱相反，就是把引用类型转化为基本类型的数据，通常通过引用类型的<code>valueof()</code>和<code>toString()</code>方法实现</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">&#x27;sun&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> age = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">24</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> name) <span class="comment">// object</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> age) <span class="comment">//  object</span></span><br><span class="line"><span class="comment">// 拆箱操作</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> age.valueOf()); <span class="comment">// number // 24  基本的数字类型</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> name.valueOf()); <span class="comment">// string  // &#x27;sun&#x27; 基本的字符类型</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> age.toString()); <span class="comment">// string  // &#x27;24&#x27; 基本的字符类型</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> name.toString()); <span class="comment">// string  // &#x27;sun&#x27; 基本的字符类型</span></span><br></pre></td></tr></table></figure>
+<h3 id="理解值类型和引用类型">理解值类型和引用类型</h3>
+<h3 id="至少可以说出三种判断JavaScript数据类型的方式，以及他们的优缺点，如何准确的判断数组类型">至少可以说出三种判断JavaScript数据类型的方式，以及他们的优缺点，如何准确的判断数组类型</h3>
+<ul>
+<li>typeof:</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">缺点： 无法区别对对象和数字、<span class="literal">null</span>返回的都是<span class="keyword">object</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>instanceof:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>constructor:</li>
+</ul>
+<h3 id="可能发生隐式类型转换的场景以及转换原则，应如何避免或巧妙应用">可能发生隐式类型转换的场景以及转换原则，应如何避免或巧妙应用</h3>
+<ul>
+<li>string转number</li>
+</ul>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> <span class="built_in">string</span> = <span class="string">&quot;string&quot;</span>;</span><br><span class="line"><span class="built_in">var</span> number = <span class="built_in">string</span>.<span class="built_in">length</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="出现小数精度丢失的原因，JavaScript可以存储的最大数字、最大安全数字，JavaScript处理大数字的方法、避免精度丢失的方法">出现小数精度丢失的原因，JavaScript可以存储的最大数字、最大安全数字，JavaScript处理大数字的方法、避免精度丢失的方法</h3>
+<hr>
+<h2 id="3-原型和原型链">3. 原型和原型链</h2>
+<ul>
+<li>
+<p>1.理解原型设计模式以及JavaScript中的原型规则</p>
+</li>
+<li>
+<p>2.instanceof的底层实现原理，手动实现一个instanceof<br>
+instanceof用来判断一个构造函数的prototype属性所指向的对象是否存在另外一个要检测对象的原型链上</p>
+</li>
+<li>
+<p>4.实现继承的几种方式以及他们的优缺点</p>
+</li>
+<li>
+<p>5.至少说出一种开源项目(如Node)中应用原型继承的案例</p>
+</li>
+<li>
+<p>6.可以描述new一个对象的详细过程，手动实现一个new操作符</p>
+</li>
+<li>
+<p>7.理解es6 class构造以及继承的底层实现原理</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-作用域和闭包">4. 作用域和闭包</h2>
+<ul>
+<li>
+<p>1.理解词法作用域和动态作用域</p>
+</li>
+<li>
+<p>2.理解JavaScript的作用域和作用域链</p>
+</li>
+<li>
+<p>3.理解JavaScript的执行上下文栈，可以应用堆栈信息快速定位问题</p>
+</li>
+<li>
+<p>4.this的原理以及几种不同使用场景的取值</p>
+</li>
+<li>
+<p>5.闭包的实现原理和作用，可以列举几个开发中闭包的实际应用</p>
+</li>
+<li>
+<p>6.理解堆栈溢出和内存泄漏的原理，如何防止</p>
+</li>
+<li>
+<p>7.如何处理循环的异步操作</p>
+</li>
+<li>
+<p>8.理解模块化解决的实际问题，可列举几个模块化方案并理解其中原理</p>
+</li>
+</ul>
+<hr>
+<h2 id="5-执行机制">5. 执行机制</h2>
+<ul>
+<li>
+<p>1.为何try里面放return，finally还会执行，理解其内部机制</p>
+</li>
+<li>
+<p>2.JavaScript如何实现异步编程，可以详细描述EventLoop机制</p>
+</li>
+<li>
+<p>3.宏任务和微任务分别有哪些</p>
+</li>
+<li>
+<p>4.可以快速分析一个复杂的异步嵌套逻辑，并掌握分析方法</p>
+</li>
+<li>
+<p>5.使用Promise实现串行</p>
+</li>
+<li>
+<p>6.Node与浏览器EventLoop的差异</p>
+</li>
+<li>
+<p>7.如何在保证页面运行流畅的情况下处理海量数据</p>
+</li>
+</ul>
+<hr>
+<h2 id="6-语法和API">6. 语法和API</h2>
+<ul>
+<li>
+<p>1.理解ECMAScript和JavaScript的关系</p>
+</li>
+<li>
+<p>2.熟练运用es5、es6提供的语法规范，</p>
+</li>
+<li>
+<p>3.熟练掌握JavaScript提供的全局对象（例如Date、Math）、全局函数（例如decodeURI、isNaN）、全局属性（例如Infinity、undefined）</p>
+</li>
+<li>
+<p>4.熟练应用map、reduce、filter 等高阶函数解决问题</p>
+</li>
+<li>
+<p>5.setInterval需要注意的点，使用settimeout实现setInterval</p>
+</li>
+<li>
+<p>6.JavaScript提供的正则表达式API、可以使用正则表达式（邮箱校验、URL解析、去重等）解决常见问题</p>
+</li>
+<li>
+<p>7.JavaScript异常处理的方式，统一的异常处理方案</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/book/" rel="tag"><i class="fa fa-tag"></i> book</a>
+              <a href="/tags/javascript/" rel="tag"><i class="fa fa-tag"></i> javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/21/javascript/gao-xing-neng-javascript/" rel="prev" title="高性能JavaScript">
+      <i class="fa fa-chevron-left"></i> 高性能JavaScript
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/27/wechat/wei-xin-xiao-cheng-xu-bi-ji/" rel="next" title="微信小程序">
+      微信小程序 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ECMAScript%E4%B8%8EJavaScript%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">1. ECMAScript与JavaScript区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%8F%98%E9%87%8F%E5%92%8C%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">2. 变量和类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">引用类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null%E5%92%8Cundefined%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.3.</span> <span class="nav-text">null和undefined的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">2.4.</span> <span class="nav-text">JavaScript对象的底层数据结构是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Symbol%E7%B1%BB%E5%9E%8B%E5%9C%A8%E5%AE%9E%E9%99%85%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E3%80%81%E5%8F%AF%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Symbol"><span class="nav-number">2.5.</span> <span class="nav-text">Symbol类型在实际开发中的应用、可手动实现一个简单的Symbol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%85%B7%E4%BD%93%E5%AD%98%E5%82%A8%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.6.</span> <span class="nav-text">JavaScript中的变量在内存中的具体存储形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E5%AF%B9%E5%BA%94%E7%9A%84%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1%EF%BC%8C%E4%BB%A5%E5%8F%8A%E4%BB%96%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E8%A3%85%E7%AE%B1%E6%8B%86%E7%AE%B1%E6%93%8D%E4%BD%9C"><span class="nav-number">2.7.</span> <span class="nav-text">基本类型对应的内置对象，以及他们之间的装箱拆箱操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.8.</span> <span class="nav-text">理解值类型和引用类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%B3%E5%B0%91%E5%8F%AF%E4%BB%A5%E8%AF%B4%E5%87%BA%E4%B8%89%E7%A7%8D%E5%88%A4%E6%96%ADJavaScript%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%96%B9%E5%BC%8F%EF%BC%8C%E4%BB%A5%E5%8F%8A%E4%BB%96%E4%BB%AC%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%8C%E5%A6%82%E4%BD%95%E5%87%86%E7%A1%AE%E7%9A%84%E5%88%A4%E6%96%AD%E6%95%B0%E7%BB%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.9.</span> <span class="nav-text">至少可以说出三种判断JavaScript数据类型的方式，以及他们的优缺点，如何准确的判断数组类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%83%BD%E5%8F%91%E7%94%9F%E9%9A%90%E5%BC%8F%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%9A%84%E5%9C%BA%E6%99%AF%E4%BB%A5%E5%8F%8A%E8%BD%AC%E6%8D%A2%E5%8E%9F%E5%88%99%EF%BC%8C%E5%BA%94%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E6%88%96%E5%B7%A7%E5%A6%99%E5%BA%94%E7%94%A8"><span class="nav-number">2.10.</span> <span class="nav-text">可能发生隐式类型转换的场景以及转换原则，应如何避免或巧妙应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BA%E7%8E%B0%E5%B0%8F%E6%95%B0%E7%B2%BE%E5%BA%A6%E4%B8%A2%E5%A4%B1%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%8CJavaScript%E5%8F%AF%E4%BB%A5%E5%AD%98%E5%82%A8%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%AD%97%E3%80%81%E6%9C%80%E5%A4%A7%E5%AE%89%E5%85%A8%E6%95%B0%E5%AD%97%EF%BC%8CJavaScript%E5%A4%84%E7%90%86%E5%A4%A7%E6%95%B0%E5%AD%97%E7%9A%84%E6%96%B9%E6%B3%95%E3%80%81%E9%81%BF%E5%85%8D%E7%B2%BE%E5%BA%A6%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.11.</span> <span class="nav-text">出现小数精度丢失的原因，JavaScript可以存储的最大数字、最大安全数字，JavaScript处理大数字的方法、避免精度丢失的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8E%9F%E5%9E%8B%E5%92%8C%E5%8E%9F%E5%9E%8B%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">3. 原型和原型链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E9%97%AD%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">4. 作用域和闭包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">5.</span> <span class="nav-text">5. 执行机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%AF%AD%E6%B3%95%E5%92%8CAPI"><span class="nav-number">6.</span> <span class="nav-text">6. 语法和API</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lfangq"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">lfangq</p>
+  <div class="site-description" itemprop="description">记录生活中的点点滴滴</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lfangq</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+</body>
+</html>
