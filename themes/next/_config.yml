@@ -401,10 +401,10 @@ github_banner:
 # ---------------------------------------------------------------
 
 font:
-  enable: false
+  enable: true
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
-  host:
+  host: https://b-gold-cdn.xitu.io/ionicons/2.0.1/fonts/ionicons.ttf?v=2.0.0
 
   # Font options:
   # `external: true` will load this font family from `host` above.
@@ -414,31 +414,31 @@ font:
   # Global font settings used for all elements inside <body>.
   global:
     external: true
-    family: PingFang SC
+    family: ionicons
     size: 10px
 
   # Font settings for site title (.site-title).
   title:
     external: true
-    family: PingFang SC
+    family: ionicons
     size: 30px
 
   # Font settings for headlines (<h1> to <h6>).
   headings:
     external: true
-    family: PingFang SC
+    family: ionicons
     size: 15px
 
   # Font settings for posts (.post-body).
   posts:
     external: true
-    family: PingFang SC
+    family: ionicons
     size: 5px
 
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family: consolas
+    family: ionicons
 
 # ---------------------------------------------------------------
 # SEO Settings
